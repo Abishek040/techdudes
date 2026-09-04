@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Globe, Cpu, Wrench, Zap, DollarSign, Headphones, ArrowRight, Quote, Star } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
-import { SplineScene } from "@/components/ui/splite";
 import { Spotlight } from "@/components/ui/spotlight";
 import { Card } from "@/components/ui/card";
 
@@ -75,41 +74,36 @@ const HomePage = () => {
         <HeroBackground />
         <Card className="w-full max-w-7xl mx-auto min-h-[600px] bg-card/80 border-glass-border relative overflow-hidden">
           <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="hsl(var(--primary) / 0.5)" />
-          <div className="flex flex-col md:flex-row h-full min-h-[600px]">
-            <div className="flex-1 p-6 md:p-8 relative z-10 flex flex-col justify-start">
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-              >
-                <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-foreground">
-                  Innovating{" "}
-                  <span className="gradient-text">Web & IoT</span>
-                  <br />
-                  Solutions for the Future
-                </h1>
-                <p className="text-base md:text-lg text-muted-foreground max-w-lg mb-8">
-                  We build modern websites and smart IoT projects for students and businesses.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link to="/contact" className="neon-btn text-base">
-                    Get Started <ArrowRight className="inline ml-2" size={18} />
-                  </Link>
-                  <Link to="/projects" className="neon-btn-outline text-base">
-                    View Projects
-                  </Link>
-                </div>
-              </motion.div>
-            </div>
-            <div className="flex-1 relative min-h-[300px] md:min-h-[600px]">
-              {window.innerWidth > 768 && (
-  <SplineScene
-    scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-    className="w-full h-full"
-  />
-)}
-            </div>
-          </div>
+          <div className="flex min-h-[600px] items-center justify-center">
+  <div className="w-full max-w-4xl p-8 md:p-16 text-center relative z-10">
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+    >
+      <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-foreground">
+        Innovating{" "}
+        <span className="gradient-text">Web & IoT</span>
+        <br />
+        Solutions for the Future
+      </h1>
+
+      <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+        We build modern websites and smart IoT projects for students and businesses.
+      </p>
+
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <Link to="/contact" className="neon-btn text-base">
+          Get Started <ArrowRight className="inline ml-2" size={18} />
+        </Link>
+
+        <Link to="/projects" className="neon-btn-outline text-base">
+          View Projects
+        </Link>
+      </div>
+    </motion.div>
+  </div>
+</div>
         </Card>
       </section>
 
