@@ -51,7 +51,7 @@ const testimonials = [
 ];
 
 const HeroBackground = () => (
-  <div className="absolute inset-0 overflow-hidden">
+  <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
     <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-glow-pulse" />
     <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] animate-glow-pulse" style={{ animationDelay: "1s" }} />
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px]" />
@@ -69,10 +69,10 @@ const HeroBackground = () => (
 const HomePage = () => {
   return (
     <div className="min-h-screen">
-      {/* Hero with 3D Spline */}
+      {/* Hero with animated background */}
       <section className="relative min-h-screen flex items-start justify-center pt-32 overflow-hidden px-4">
         <HeroBackground />
-        <Card className="w-full max-w-7xl mx-auto min-h-[600px] bg-card/80 border-glass-border relative overflow-hidden">
+        <Card className="relative z-10 w-full max-w-7xl mx-auto min-h-[600px] bg-card/50 border-glass-border overflow-hidden">
           <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="hsl(var(--primary) / 0.5)" />
           <div className="flex min-h-[600px] items-center justify-center">
   <div className="w-full max-w-4xl p-8 md:p-16 text-center relative z-10">
@@ -93,9 +93,13 @@ const HomePage = () => {
       </p>
 
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
-        <Link to="/contact" className="neon-btn text-base">
-          Get Started <ArrowRight className="inline ml-2" size={18} />
-        </Link>
+        <Link
+  to="/contact"
+  className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-400 px-6 py-4 text-base font-semibold text-black transition hover:bg-cyan-300"
+>
+  <span>Get Started</span>
+  <ArrowRight size={18} />
+</Link>
 
         <Link to="/projects" className="neon-btn-outline text-base">
           View Projects
@@ -236,9 +240,13 @@ const HomePage = () => {
             <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
               Let's turn your ideas into reality. Get in touch with us today.
             </p>
-            <Link to="/contact" className="neon-btn text-base">
-              Start Your Project <ArrowRight className="inline ml-2" size={18} />
-            </Link>
+            <Link
+  to="/contact"
+  className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-400 px-6 py-4 text-base font-semibold text-black transition hover:bg-cyan-300"
+>
+  <span>Start Your Project</span>
+  <ArrowRight size={18} />
+</Link>
           </motion.div>
         </div>
       </section>
