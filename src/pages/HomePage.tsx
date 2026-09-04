@@ -50,31 +50,13 @@ const testimonials = [
   { name: "Amit Kumar", role: "Startup Founder", text: "Best tech partner for early-stage startups. Fast, reliable, and innovative.", rating: 5 },
 ];
 
-const HeroBackground = () => (
-  <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-    <div className="absolute left-[-100px] top-[100px] h-[350px] w-[350px] rounded-full bg-cyan-400/30 blur-[100px]" />
 
-    <div className="absolute right-[-100px] bottom-[100px] h-[350px] w-[350px] rounded-full bg-purple-500/30 blur-[100px]" />
-
-    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-purple-500/10" />
-
-    <div
-      className="absolute inset-0 opacity-[0.08]"
-      style={{
-        backgroundImage:
-          "linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)",
-        backgroundSize: "60px 60px",
-      }}
-    />
-  </div>
-);
 
 const HomePage = () => {
   return (
     <div className="min-h-screen">
       {/* Hero with animated background */}
-      <section className="relative isolate min-h-screen flex items-start justify-center overflow-hidden bg-gradient-to-br from-cyan-950/40 via-background to-purple-950/40 px-4 pt-32">
-        <HeroBackground />
+      <section className="relative min-h-screen flex items-start justify-center overflow-hidden px-4 pt-32">
         <Card className="relative z-10 w-full max-w-7xl mx-auto min-h-[600px] bg-transparent border-glass-border overflow-hidden">
           <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="hsl(var(--primary) / 0.5)" />
           <div className="flex min-h-[600px] items-center justify-center">
