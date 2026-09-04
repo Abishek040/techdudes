@@ -52,14 +52,17 @@ const testimonials = [
 
 const HeroBackground = () => (
   <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-    <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-glow-pulse" />
-    <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] animate-glow-pulse" style={{ animationDelay: "1s" }} />
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px]" />
-    {/* Grid */}
+    <div className="absolute left-[-100px] top-[100px] h-[350px] w-[350px] rounded-full bg-cyan-400/30 blur-[100px]" />
+
+    <div className="absolute right-[-100px] bottom-[100px] h-[350px] w-[350px] rounded-full bg-purple-500/30 blur-[100px]" />
+
+    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-purple-500/10" />
+
     <div
-      className="absolute inset-0 opacity-[0.03]"
+      className="absolute inset-0 opacity-[0.08]"
       style={{
-        backgroundImage: "linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)",
+        backgroundImage:
+          "linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)",
         backgroundSize: "60px 60px",
       }}
     />
@@ -70,9 +73,9 @@ const HomePage = () => {
   return (
     <div className="min-h-screen">
       {/* Hero with animated background */}
-      <section className="relative min-h-screen flex items-start justify-center pt-32 overflow-hidden px-4">
+      <section className="relative isolate min-h-screen flex items-start justify-center overflow-hidden bg-gradient-to-br from-cyan-950/40 via-background to-purple-950/40 px-4 pt-32">
         <HeroBackground />
-        <Card className="relative z-10 w-full max-w-7xl mx-auto min-h-[600px] bg-card/50 border-glass-border overflow-hidden">
+        <Card className="relative z-10 w-full max-w-7xl mx-auto min-h-[600px] bg-transparent border-glass-border overflow-hidden">
           <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="hsl(var(--primary) / 0.5)" />
           <div className="flex min-h-[600px] items-center justify-center">
   <div className="w-full max-w-4xl p-8 md:p-16 text-center relative z-10">
