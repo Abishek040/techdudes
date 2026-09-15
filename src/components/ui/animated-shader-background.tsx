@@ -5,13 +5,28 @@ const AnoAI = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (window.innerWidth < 768) return;
+    // ------------------------------------------------------------
+    // MOBILE
+    // ------------------------------------------------------------
+    // Keep the existing behavior of disabling the heavy WebGL
+    // animation on small screens.
+    if (window.innerWidth < 768) {
+      return;
+    }
 
     const container = containerRef.current;
-    if (!container) return;
+
+    if (!container) {
+      return;
+    }
+
+    // ------------------------------------------------------------
+    // SCENE
+    // ------------------------------------------------------------
 
     const scene = new THREE.Scene();
 
+    // Full-screen orthographic camera
     const camera = new THREE.OrthographicCamera(
       -1,
       1,
@@ -21,19 +36,49 @@ const AnoAI = () => {
       1
     );
 
+    // ------------------------------------------------------------
+    // RENDERER
+    // ------------------------------------------------------------
+
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
-      alpha: true,
+      alpha: false,
+      powerPreference: "high-performance",
     });
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    // Limit pixel ratio for performance
+    renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio || 1, 1.5)
+    );
+
+    // IMPORTANT:
+    // Always use the COMPLETE viewport size.
+    renderer.setSize(
+      window.innerWidth,
+      window.innerHeight,
+      false
+    );
+
+    // Prevent the canvas from behaving like an inline image
+    renderer.domElement.style.display = "block";
+    renderer.domElement.style.position = "absolute";
+    renderer.domElement.style.top = "0";
+    renderer.domElement.style.left = "0";
+    renderer.domElement.style.width = "100%";
+    renderer.domElement.style.height = "100%";
 
     container.appendChild(renderer.domElement);
 
+    // ------------------------------------------------------------
+    // SHADER MATERIAL
+    // ------------------------------------------------------------
+
     const material = new THREE.ShaderMaterial({
       uniforms: {
-        iTime: { value: 0 },
+        iTime: {
+          value: 0,
+        },
+
         iResolution: {
           value: new THREE.Vector2(
             window.innerWidth,
@@ -55,17 +100,33 @@ const AnoAI = () => {
         #define NUM_OCTAVES 3
 
         float rand(vec2 n) {
-          return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
+          return fract(
+            sin(
+              dot(
+                n,
+                vec2(12.9898, 4.1414)
+              )
+            ) * 43758.5453
+          );
         }
 
         float noise(vec2 p) {
           vec2 ip = floor(p);
           vec2 u = fract(p);
+
           u = u * u * (3.0 - 2.0 * u);
 
           float res = mix(
-            mix(rand(ip), rand(ip + vec2(1.0, 0.0)), u.x),
-            mix(rand(ip + vec2(0.0, 1.0)), rand(ip + vec2(1.0, 1.0)), u.x),
+            mix(
+              rand(ip),
+              rand(ip + vec2(1.0, 0.0)),
+              u.x
+            ),
+            mix(
+              rand(ip + vec2(0.0, 1.0)),
+              rand(ip + vec2(1.0, 1.0)),
+              u.x
+            ),
             u.y
           );
 
@@ -75,6 +136,7 @@ const AnoAI = () => {
         float fbm(vec2 x) {
           float v = 0.0;
           float a = 0.3;
+
           vec2 shift = vec2(100.0);
 
           mat2 rot = mat2(
@@ -86,7 +148,9 @@ const AnoAI = () => {
 
           for (int i = 0; i < NUM_OCTAVES; ++i) {
             v += a * noise(x);
+
             x = rot * x * 2.0 + shift;
+
             a *= 0.4;
           }
 
@@ -94,110 +158,272 @@ const AnoAI = () => {
         }
 
         void main() {
+
+          // ------------------------------------------------------
+          // ANIMATION SHAKE
+          // ------------------------------------------------------
+
           vec2 shake = vec2(
             sin(iTime * 1.2) * 0.005,
             cos(iTime * 2.1) * 0.005
           );
 
+          // ------------------------------------------------------
+          // SCREEN COORDINATES
+          // ------------------------------------------------------
+
           vec2 p =
-            ((gl_FragCoord.xy + shake * iResolution.xy)
-            - iResolution.xy * 0.5)
+            (
+              (gl_FragCoord.xy + shake * iResolution.xy)
+              - iResolution.xy * 0.5
+            )
             / iResolution.y
-            * mat2(6.0, -4.0, 4.0, 6.0);
+            * mat2(
+              6.0,
+              -4.0,
+              4.0,
+              6.0
+            );
 
           vec2 v;
+
           vec4 o = vec4(0.0);
 
-          float f = 2.0 + fbm(
-            p + vec2(iTime * 5.0, 0.0)
-          ) * 0.5;
+          // ------------------------------------------------------
+          // FLOW FIELD
+          // ------------------------------------------------------
+
+          float f =
+            2.0
+            + fbm(
+                p + vec2(
+                  iTime * 5.0,
+                  0.0
+                )
+              ) * 0.5;
+
+          // ------------------------------------------------------
+          // AURORA LINES
+          // ------------------------------------------------------
 
           for (float i = 0.0; i < 35.0; i++) {
+
             v =
               p
               + cos(
-                i * i
-                + (iTime + p.x * 0.08) * 0.025
-                + i * vec2(13.0, 11.0)
-              ) * 3.5
+                  i * i
+                  + (
+                      iTime
+                      + p.x * 0.08
+                    ) * 0.025
+                  + i * vec2(13.0, 11.0)
+                ) * 3.5
+
               + vec2(
-                sin(iTime * 3.0 + i) * 0.003,
-                cos(iTime * 3.5 - i) * 0.003
-              );
+                  sin(iTime * 3.0 + i) * 0.003,
+                  cos(iTime * 3.5 - i) * 0.003
+                );
 
             float tailNoise =
-              fbm(v + vec2(iTime * 0.5, i))
+              fbm(
+                v + vec2(
+                  iTime * 0.5,
+                  i
+                )
+              )
               * 0.3
-              * (1.0 - (i / 35.0));
+              * (
+                1.0
+                - (i / 35.0)
+              );
+
+            // ----------------------------------------------------
+            // AURORA COLORS
+            // ----------------------------------------------------
 
             vec4 auroraColors = vec4(
-              0.1 + 0.3 * sin(i * 0.2 + iTime * 0.4),
-              0.3 + 0.5 * cos(i * 0.3 + iTime * 0.5),
-              0.7 + 0.3 * sin(i * 0.4 + iTime * 0.3),
+              0.1
+                + 0.3
+                * sin(
+                    i * 0.2
+                    + iTime * 0.4
+                  ),
+
+              0.3
+                + 0.5
+                * cos(
+                    i * 0.3
+                    + iTime * 0.5
+                  ),
+
+              0.7
+                + 0.3
+                * sin(
+                    i * 0.4
+                    + iTime * 0.3
+                  ),
+
               1.0
             );
 
+            // ----------------------------------------------------
+            // LIGHT CONTRIBUTION
+            // ----------------------------------------------------
+
             vec4 currentContribution =
               auroraColors
-              * exp(sin(i * i + iTime * 0.8))
-              / length(
-                max(
-                  v,
-                  vec2(v.x * f * 0.015, v.y * 1.5)
+              * exp(
+                  sin(
+                    i * i
+                    + iTime * 0.8
+                  )
                 )
-              );
+              / length(
+                  max(
+                    v,
+                    vec2(
+                      v.x * f * 0.015,
+                      v.y * 1.5
+                    )
+                  )
+                );
 
             float thinnessFactor =
-              smoothstep(0.0, 1.0, i / 35.0) * 0.6;
+              smoothstep(
+                0.0,
+                1.0,
+                i / 35.0
+              )
+              * 0.6;
 
-            o += currentContribution
-              * (1.0 + tailNoise * 0.8)
+            o +=
+              currentContribution
+              * (
+                  1.0
+                  + tailNoise * 0.8
+                )
               * thinnessFactor;
           }
 
-          o = tanh(pow(o / 100.0, vec4(1.6)));
+          // ------------------------------------------------------
+          // FINAL COLOR
+          // ------------------------------------------------------
+
+          o =
+            tanh(
+              pow(
+                o / 100.0,
+                vec4(1.6)
+              )
+            );
+
           gl_FragColor = o * 1.5;
         }
       `,
     });
 
-    const geometry = new THREE.PlaneGeometry(2, 2);
-    const mesh = new THREE.Mesh(geometry, material);
+    // ------------------------------------------------------------
+    // FULL-SCREEN PLANE
+    // ------------------------------------------------------------
+
+    const geometry = new THREE.PlaneGeometry(
+      2,
+      2
+    );
+
+    const mesh = new THREE.Mesh(
+      geometry,
+      material
+    );
 
     scene.add(mesh);
 
-    let frameId: number;
+    // ------------------------------------------------------------
+    // ANIMATION
+    // ------------------------------------------------------------
+
+    let frameId = 0;
+
     let lastTime = 0;
 
     const animate = (time: number) => {
-      if (time - lastTime > 16) {
-        material.uniforms.iTime.value += 0.016;
-        renderer.render(scene, camera);
-        lastTime = time;
+      frameId = requestAnimationFrame(animate);
+
+      // Approximately 60 FPS
+      if (time - lastTime < 16) {
+        return;
       }
 
-      frameId = requestAnimationFrame(animate);
-    };
+      lastTime = time;
 
-    animate(0);
+      material.uniforms.iTime.value += 0.016;
 
-    const handleResize = () => {
-      renderer.setSize(window.innerWidth, window.innerHeight);
-
-      material.uniforms.iResolution.value.set(
-        window.innerWidth,
-        window.innerHeight
+      renderer.render(
+        scene,
+        camera
       );
     };
 
-    window.addEventListener("resize", handleResize);
+    // Initial render
+    renderer.render(
+      scene,
+      camera
+    );
+
+    frameId = requestAnimationFrame(
+      animate
+    );
+
+    // ------------------------------------------------------------
+    // RESPONSIVE RESIZE
+    // ------------------------------------------------------------
+
+    const handleResize = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      // IMPORTANT:
+      // Always resize to the complete viewport.
+      renderer.setSize(
+        width,
+        height,
+        false
+      );
+
+      material.uniforms.iResolution.value.set(
+        width,
+        height
+      );
+
+      renderer.domElement.style.width = "100%";
+      renderer.domElement.style.height = "100%";
+    };
+
+    window.addEventListener(
+      "resize",
+      handleResize
+    );
+
+    // ------------------------------------------------------------
+    // CLEANUP
+    // ------------------------------------------------------------
 
     return () => {
       cancelAnimationFrame(frameId);
-      window.removeEventListener("resize", handleResize);
 
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+      window.removeEventListener(
+        "resize",
+        handleResize
+      );
+
+      if (
+        container.contains(
+          renderer.domElement
+        )
+      ) {
+        container.removeChild(
+          renderer.domElement
+        );
       }
 
       geometry.dispose();
@@ -206,10 +432,27 @@ const AnoAI = () => {
     };
   }, []);
 
+  // --------------------------------------------------------------
+  // BACKGROUND CONTAINER
+  // --------------------------------------------------------------
+
   return (
     <div
       ref={containerRef}
-      className="pointer-events-none fixed inset-0 -z-10 h-full w-full"
+      className="
+        fixed
+        inset-0
+        w-full
+        h-full
+        overflow-hidden
+        pointer-events-none
+        -z-10
+      "
+      style={{
+        width: "100vw",
+        height: "100vh",
+        maxWidth: "100%",
+      }}
     />
   );
 };

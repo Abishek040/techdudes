@@ -1,20 +1,62 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Globe, Cpu, Wrench, Zap, DollarSign, Headphones, ArrowRight, Quote, Star } from "lucide-react";
+import {
+  Globe,
+  Cpu,
+  Wrench,
+  Zap,
+  DollarSign,
+  Headphones,
+  ArrowRight,
+  Quote,
+  Star,
+  CalendarDays,
+  BookOpen,
+  Award,
+  CheckCircle2,
+} from "lucide-react";
+
 import SectionHeading from "@/components/SectionHeading";
 import { Spotlight } from "@/components/ui/spotlight";
 import { Card } from "@/components/ui/card";
 
 const services = [
-  { icon: Globe, title: "Web Design", desc: "Modern, responsive websites for businesses and portfolios.", color: "primary" },
-  { icon: Cpu, title: "IoT Projects", desc: "Arduino, ESP32, and smart systems for college projects.", color: "secondary" },
-  { icon: Wrench, title: "Tech Support", desc: "Debugging, maintenance, and technical documentation.", color: "primary" },
+  {
+    icon: Globe,
+    title: "Web Design",
+    desc: "Modern, responsive websites for businesses and portfolios.",
+    color: "primary",
+  },
+  {
+    icon: Cpu,
+    title: "IoT Projects",
+    desc: "Arduino, ESP32, and smart systems for college projects.",
+    color: "secondary",
+  },
+  {
+    icon: Wrench,
+    title: "Tech Support",
+    desc: "Debugging, maintenance, and technical documentation.",
+    color: "primary",
+  },
 ];
 
 const whyUs = [
-  { icon: Zap, title: "Fast Delivery", desc: "Quick turnaround without compromising quality." },
-  { icon: DollarSign, title: "Affordable Pricing", desc: "Student-friendly rates for every budget." },
-  { icon: Headphones, title: "Expert Support", desc: "Dedicated help from experienced developers." },
+  {
+    icon: Zap,
+    title: "Fast Delivery",
+    desc: "Quick turnaround without compromising quality.",
+  },
+  {
+    icon: DollarSign,
+    title: "Affordable Pricing",
+    desc: "Student-friendly rates for every budget.",
+  },
+  {
+    icon: Headphones,
+    title: "Expert Support",
+    desc: "Dedicated help from experienced developers.",
+  },
 ];
 
 const projects = [
@@ -45,62 +87,123 @@ const projects = [
 ];
 
 const testimonials = [
-  { name: "Rahul Sharma", role: "B.Tech Student", text: "TechDudes helped me build my final year IoT project in just 2 weeks. Amazing quality!", rating: 5 },
-  { name: "Priya Patel", role: "Small Business Owner", text: "Our new website brought in 3x more customers. Professional and affordable!", rating: 5 },
-  { name: "Amit Kumar", role: "Startup Founder", text: "Best tech partner for early-stage startups. Fast, reliable, and innovative.", rating: 5 },
+  {
+    name: "Rahul Sharma",
+    role: "B.Tech Student",
+    text: "TechDudes helped me build my final year IoT project in just 2 weeks. Amazing quality!",
+    rating: 5,
+  },
+  {
+    name: "Priya Patel",
+    role: "Small Business Owner",
+    text: "Our new website brought in 3x more customers. Professional and affordable!",
+    rating: 5,
+  },
+  {
+    name: "Amit Kumar",
+    role: "Startup Founder",
+    text: "Best tech partner for early-stage startups. Fast, reliable, and innovative.",
+    rating: 5,
+  },
 ];
 
-
+const internshipHighlights = [
+  {
+    icon: CalendarDays,
+    title: "15 Days",
+    description: "Structured online internship program",
+  },
+  {
+    icon: BookOpen,
+    title: "Practical Learning",
+    description: "Learn through structured technical modules",
+  },
+  {
+    icon: CheckCircle2,
+    title: "Final Assessment",
+    description: "Complete modules and pass all quizzes",
+  },
+  {
+    icon: Award,
+    title: "Verified Certificate",
+    description: "Receive an internship certificate after completion",
+  },
+];
 
 const HomePage = () => {
   return (
     <div className="min-h-screen">
-      {/* Hero with animated background */}
+
+      {/* =========================================================
+          HERO
+      ========================================================== */}
       <section className="relative min-h-screen flex items-start justify-center overflow-hidden px-4 pt-32">
         <Card className="relative z-10 w-full max-w-7xl mx-auto min-h-[600px] bg-transparent border-glass-border overflow-hidden">
-          <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="hsl(var(--primary) / 0.5)" />
+          <Spotlight
+            className="-top-40 left-0 md:left-60 md:-top-20"
+            fill="hsl(var(--primary) / 0.5)"
+          />
+
           <div className="flex min-h-[600px] items-center justify-center">
-  <div className="w-full max-w-4xl p-8 md:p-16 text-center relative z-10">
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-    >
-      <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-foreground">
-        Innovating{" "}
-        <span className="gradient-text">Web & IoT</span>
-        <br />
-        Solutions for the Future
-      </h1>
+            <div className="w-full max-w-4xl p-8 md:p-16 text-center relative z-10">
 
-      <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-        We build modern websites and smart IoT projects for students and businesses.
-      </p>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-foreground">
+                  Innovating{" "}
+                  <span className="gradient-text">Web & IoT</span>
+                  <br />
+                  Solutions for the Future
+                </h1>
 
-      <div className="flex flex-col sm:flex-row gap-4 justify-center">
-        <Link
-  to="/contact"
-  className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-400 px-6 py-4 text-base font-semibold text-black transition hover:bg-cyan-300"
->
-  <span>Get Started</span>
-  <ArrowRight size={18} />
-</Link>
+                <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+                  We build modern websites and smart IoT projects for students
+                  and businesses.
+                </p>
 
-        <Link to="/projects" className="neon-btn-outline text-base">
-          View Projects
-        </Link>
-      </div>
-    </motion.div>
-  </div>
-</div>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+                  <Link
+                    to="/contact"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-400 px-6 py-4 text-base font-semibold text-black transition hover:bg-cyan-300"
+                  >
+                    <span>Get Started</span>
+                    <ArrowRight size={18} />
+                  </Link>
+
+                  <Link
+                    to="/projects"
+                    className="neon-btn-outline text-base"
+                  >
+                    View Projects
+                  </Link>
+
+                </div>
+              </motion.div>
+
+            </div>
+          </div>
         </Card>
       </section>
 
-      {/* Services */}
+
+      {/* =========================================================
+          SERVICES
+      ========================================================== */}
       <section className="section-padding gradient-bg">
         <div className="container mx-auto px-4">
-          <SectionHeading badge="What We Do" title="Our Services" subtitle="From stunning websites to smart IoT systems, we've got you covered." />
+
+          <SectionHeading
+            badge="What We Do"
+            title="Our Services"
+            subtitle="From stunning websites to smart IoT systems, we've got you covered."
+          />
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
             {services.map((s, i) => (
               <motion.div
                 key={s.title}
@@ -110,22 +213,303 @@ const HomePage = () => {
                 transition={{ delay: i * 0.15 }}
                 className="glass-card group cursor-pointer"
               >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${s.color === "primary" ? "bg-primary/20 text-primary" : "bg-secondary/10 text-secondary"}`}>
+
+                <div
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${
+                    s.color === "primary"
+                      ? "bg-primary/20 text-primary"
+                      : "bg-secondary/10 text-secondary"
+                  }`}
+                >
                   <s.icon size={24} />
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">{s.title}</h3>
-                <p className="text-muted-foreground text-sm">{s.desc}</p>
+
+                <h3 className="text-xl font-semibold text-foreground mb-2">
+                  {s.title}
+                </h3>
+
+                <p className="text-muted-foreground text-sm">
+                  {s.desc}
+                </p>
+
               </motion.div>
             ))}
+
           </div>
+
         </div>
       </section>
 
-      {/* Why Choose Us */}
+
+      {/* =========================================================
+          INTERNSHIPS
+      ========================================================== */}
+      <section className="section-padding relative overflow-hidden">
+
+        {/* Background glow */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-10 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
+        </div>
+
+        <div className="container mx-auto px-4 relative z-10">
+
+          <SectionHeading
+            badge="Learn • Build • Grow"
+            title="Online Internship Programs"
+            subtitle="Build practical skills through structured technical internship programs designed for students and aspiring developers."
+          />
+
+          {/* Main internship card */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="relative max-w-6xl mx-auto"
+          >
+
+            <div className="glass-card relative overflow-hidden border border-primary/20">
+
+              {/* Decorative glow */}
+              <div className="absolute -top-32 -right-32 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-secondary/10 rounded-full blur-3xl pointer-events-none" />
+
+              <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-10 p-8 md:p-12">
+
+                {/* Left side */}
+                <div>
+
+                  <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 mb-5">
+                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                    <span className="text-sm font-medium text-primary">
+                      Now Enrolling
+                    </span>
+                  </div>
+
+                  <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight mb-5">
+                    15 Days Online Internship in{" "}
+                    <span className="gradient-text">
+                      IoT & Embedded Systems
+                    </span>
+                  </h2>
+
+                  <p className="text-muted-foreground leading-relaxed mb-6">
+                    Learn the fundamentals of IoT and embedded systems through
+                    a structured online internship program. Explore
+                    microcontrollers, sensors, ESP32, communication
+                    technologies and IoT applications while building your
+                    technical knowledge.
+                  </p>
+
+                  {/* Highlights */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+
+                    {internshipHighlights.map((item) => (
+                      <div
+                        key={item.title}
+                        className="flex items-start gap-3 rounded-xl border border-border/50 bg-background/30 p-4"
+                      >
+
+                        <div className="w-10 h-10 shrink-0 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                          <item.icon size={20} />
+                        </div>
+
+                        <div>
+                          <h3 className="text-sm font-semibold text-foreground">
+                            {item.title}
+                          </h3>
+
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {item.description}
+                          </p>
+                        </div>
+
+                      </div>
+                    ))}
+
+                  </div>
+
+                  {/* Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-4">
+
+                    <Link
+                      to="/internship"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-400 px-6 py-3.5 text-sm font-semibold text-black transition hover:bg-cyan-300"
+                    >
+                      Explore Internship
+                      <ArrowRight size={18} />
+                    </Link>
+
+                    <Link
+                      to="/internship/register"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary/40 px-6 py-3.5 text-sm font-semibold text-foreground transition hover:bg-primary/10"
+                    >
+                      Register Now
+                    </Link>
+
+                  </div>
+
+                </div>
+
+
+                {/* Right side */}
+                <div className="flex items-center">
+
+                  <div className="w-full rounded-2xl border border-primary/20 bg-background/40 backdrop-blur-sm p-6 md:p-8">
+
+                    <div className="flex items-center justify-between mb-6">
+
+                      <div>
+                        <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">
+                          Featured Program
+                        </p>
+
+                        <h3 className="text-xl font-bold text-foreground">
+                          IoT & Embedded Systems
+                        </h3>
+                      </div>
+
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                        <Cpu size={25} />
+                      </div>
+
+                    </div>
+
+
+                    {/* Program details */}
+                    <div className="space-y-4">
+
+                      <div className="flex items-center justify-between py-3 border-b border-border/40">
+                        <span className="text-sm text-muted-foreground">
+                          Duration
+                        </span>
+
+                        <span className="text-sm font-semibold text-foreground">
+                          15 Days
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between py-3 border-b border-border/40">
+                        <span className="text-sm text-muted-foreground">
+                          Mode
+                        </span>
+
+                        <span className="text-sm font-semibold text-foreground">
+                          Online
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between py-3 border-b border-border/40">
+                        <span className="text-sm text-muted-foreground">
+                          Assessment
+                        </span>
+
+                        <span className="text-sm font-semibold text-foreground">
+                          Final Assessment
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between py-3 border-b border-border/40">
+                        <span className="text-sm text-muted-foreground">
+                          Certificate
+                        </span>
+
+                        <span className="inline-flex items-center gap-1 text-sm font-semibold text-cyan-400">
+                          <Award size={15} />
+                          Verified
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-3">
+
+                        <span className="text-sm text-muted-foreground">
+                          Certificate Fee
+                        </span>
+
+                        <span className="text-2xl font-bold text-foreground">
+                          ₹199
+                        </span>
+
+                      </div>
+
+                    </div>
+
+
+                    {/* Bottom note */}
+                    <div className="mt-6 rounded-xl bg-primary/5 border border-primary/10 p-4">
+
+                      <div className="flex items-start gap-3">
+
+                        <CheckCircle2
+                          size={20}
+                          className="text-cyan-400 mt-0.5 shrink-0"
+                        />
+
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          Complete the internship modules, pass the final
+                          assessment and complete the certificate payment to
+                          become eligible for your verified internship
+                          certificate.
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </motion.div>
+
+
+          {/* Bottom CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-center mt-8"
+          >
+
+            <p className="text-sm text-muted-foreground mb-3">
+              More internship programs will be available soon.
+            </p>
+
+            <Link
+              to="/internship"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+            >
+              View All Internship Programs
+              <ArrowRight size={16} />
+            </Link>
+
+          </motion.div>
+
+        </div>
+
+      </section>
+
+
+      {/* =========================================================
+          WHY CHOOSE US
+      ========================================================== */}
       <section className="section-padding">
         <div className="container mx-auto px-4">
-          <SectionHeading badge="Why Us" title="Why Choose TechDudes" subtitle="We deliver quality, speed, and affordability." />
+
+          <SectionHeading
+            badge="Why Us"
+            title="Why Choose TechDudes"
+            subtitle="We deliver quality, speed, and affordability."
+          />
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
             {whyUs.map((item, i) => (
               <motion.div
                 key={item.title}
@@ -135,22 +519,42 @@ const HomePage = () => {
                 transition={{ delay: i * 0.15 }}
                 className="text-center p-8"
               >
+
                 <div className="w-16 h-16 rounded-2xl bg-primary/20 text-primary flex items-center justify-center mx-auto mb-4">
                   <item.icon size={28} />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">{item.title}</h3>
-                <p className="text-muted-foreground text-sm">{item.desc}</p>
+
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  {item.title}
+                </h3>
+
+                <p className="text-muted-foreground text-sm">
+                  {item.desc}
+                </p>
+
               </motion.div>
             ))}
+
           </div>
+
         </div>
       </section>
 
-      {/* Featured Projects */}
+
+      {/* =========================================================
+          FEATURED PROJECTS
+      ========================================================== */}
       <section className="section-padding gradient-bg">
         <div className="container mx-auto px-4">
-          <SectionHeading badge="Portfolio" title="Featured Projects" subtitle="A showcase of our recent work." />
+
+          <SectionHeading
+            badge="Portfolio"
+            title="Featured Projects"
+            subtitle="A showcase of our recent work."
+          />
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
             {projects.map((p, i) => (
               <motion.div
                 key={p.title}
@@ -160,32 +564,67 @@ const HomePage = () => {
                 transition={{ delay: i * 0.1 }}
                 className="glass-card group"
               >
+
                 <div className="h-40 rounded-xl mb-4 overflow-hidden group">
-  <img
-    src={p.image}
-    alt={p.title}
-    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-  />
-</div>
-                <span className="text-xs font-medium text-primary">{p.category}</span>
-                <h3 className="text-lg font-semibold text-foreground mt-1 mb-2">{p.title}</h3>
-                <p className="text-muted-foreground text-sm">{p.desc}</p>
+
+                  <img
+                    src={p.image}
+                    alt={p.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+
+                </div>
+
+                <span className="text-xs font-medium text-primary">
+                  {p.category}
+                </span>
+
+                <h3 className="text-lg font-semibold text-foreground mt-1 mb-2">
+                  {p.title}
+                </h3>
+
+                <p className="text-muted-foreground text-sm">
+                  {p.desc}
+                </p>
+
               </motion.div>
             ))}
+
           </div>
+
           <div className="text-center mt-10">
-            <Link to="/projects" className="neon-btn-outline">
-              View All Projects <ArrowRight className="inline ml-2" size={16} />
+
+            <Link
+              to="/projects"
+              className="neon-btn-outline"
+            >
+              View All Projects
+              <ArrowRight
+                className="inline ml-2"
+                size={16}
+              />
             </Link>
+
           </div>
+
         </div>
       </section>
 
-      {/* Testimonials */}
+
+      {/* =========================================================
+          TESTIMONIALS
+      ========================================================== */}
       <section className="section-padding">
         <div className="container mx-auto px-4">
-          <SectionHeading badge="Reviews" title="What Our Clients Say" subtitle="Trusted by students and businesses alike." />
+
+          <SectionHeading
+            badge="Reviews"
+            title="What Our Clients Say"
+            subtitle="Trusted by students and businesses alike."
+          />
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
             {testimonials.map((t, i) => (
               <motion.div
                 key={t.name}
@@ -195,46 +634,85 @@ const HomePage = () => {
                 transition={{ delay: i * 0.15 }}
                 className="glass-card"
               >
-                <Quote size={24} className="text-primary/30 mb-4" />
-                <p className="text-foreground/80 text-sm mb-4 leading-relaxed">{t.text}</p>
+
+                <Quote
+                  size={24}
+                  className="text-primary/30 mb-4"
+                />
+
+                <p className="text-foreground/80 text-sm mb-4 leading-relaxed">
+                  {t.text}
+                </p>
+
                 <div className="flex items-center gap-1 mb-3">
+
                   {Array.from({ length: t.rating }).map((_, j) => (
-                    <Star key={j} size={14} className="fill-primary text-primary" />
+                    <Star
+                      key={j}
+                      size={14}
+                      className="fill-primary text-primary"
+                    />
                   ))}
+
                 </div>
-                <p className="font-semibold text-foreground text-sm">{t.name}</p>
-                <p className="text-muted-foreground text-xs">{t.role}</p>
+
+                <p className="font-semibold text-foreground text-sm">
+                  {t.name}
+                </p>
+
+                <p className="text-muted-foreground text-xs">
+                  {t.role}
+                </p>
+
               </motion.div>
             ))}
+
           </div>
+
         </div>
       </section>
 
-      {/* CTA */}
+
+      {/* =========================================================
+          FINAL CTA
+      ========================================================== */}
       <section className="section-padding">
+
         <div className="container mx-auto px-4">
+
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             className="glass-card text-center py-16 px-8"
           >
+
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Ready to Build Something <span className="gradient-text">Amazing</span>?
+              Ready to Build Something{" "}
+              <span className="gradient-text">
+                Amazing
+              </span>
+              ?
             </h2>
+
             <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
               Let's turn your ideas into reality. Get in touch with us today.
             </p>
+
             <Link
-  to="/contact"
-  className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-400 px-6 py-4 text-base font-semibold text-black transition hover:bg-cyan-300"
->
-  <span>Start Your Project</span>
-  <ArrowRight size={18} />
-</Link>
+              to="/contact"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-400 px-6 py-4 text-base font-semibold text-black transition hover:bg-cyan-300"
+            >
+              <span>Start Your Project</span>
+              <ArrowRight size={18} />
+            </Link>
+
           </motion.div>
+
         </div>
+
       </section>
+
     </div>
   );
 };
