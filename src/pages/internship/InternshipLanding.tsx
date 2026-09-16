@@ -117,14 +117,15 @@ const InternshipLanding = () => {
 
      We only need this when the student is logged in.
 
-     This is NOT displayed on this page.
-
-     It is only used to determine whether the student already
-     has an active enrollment for a particular internship.
+     Admin accounts do NOT need student enrollment data.
   ============================================================== */
 
   useEffect(() => {
-    if (!user) {
+    /*
+      If the user is logged out OR the logged-in user is an admin,
+      do not load student enrollments.
+    */
+    if (!user || profile?.role === "admin") {
       setEnrollments([]);
       setStudentLoading(false);
       return;
@@ -158,7 +159,7 @@ const InternshipLanding = () => {
     };
 
     loadStudentEnrollments();
-  }, [user]);
+  }, [user, profile]);
 
   /* ==============================================================
      TODAY
@@ -199,11 +200,27 @@ const InternshipLanding = () => {
   ============================================================== */
 
   const handleStartNow = (internship: Internship) => {
+    /*
+      Admin should never enter the student enrollment flow.
+      If an admin clicks Start Now / Open Dashboard,
+      send them directly to the Admin Dashboard.
+    */
+    if (profile?.role === "admin") {
+      navigate("/admin/internship");
+      return;
+    }
+
+    /*
+      Logged out user
+    */
     if (!user) {
       navigate("/internship/register");
       return;
     }
 
+    /*
+      Student with active enrollment
+    */
     const activeEnrollment =
       activeEnrollmentByInternship[internship.id];
 
@@ -212,6 +229,9 @@ const InternshipLanding = () => {
       return;
     }
 
+    /*
+      Student without active enrollment
+    */
     navigate(
       `/internship/enroll/${internship.slug}`
     );
@@ -360,12 +380,24 @@ const InternshipLanding = () => {
 
               </div>
 
+              {/* ==================================================
+                  ADMIN / STUDENT DASHBOARD BUTTON
+              ================================================== */}
+
               <Button
                 asChild
                 className="neon-btn"
               >
-                <Link to="/internship/dashboard">
-                  Go to Dashboard
+                <Link
+                  to={
+                    profile?.role === "admin"
+                      ? "/admin/internship"
+                      : "/internship/dashboard"
+                  }
+                >
+                  {profile?.role === "admin"
+                    ? "View Admin Dashboard"
+                    : "View Dashboard"}
                 </Link>
               </Button>
 
@@ -606,6 +638,7 @@ const InternshipLanding = () => {
                     ================================================= */}
 
                     {user &&
+                      profile?.role !== "admin" &&
                       hasActiveEnrollment && (
 
                         <div
@@ -646,13 +679,18 @@ const InternshipLanding = () => {
 
                       <Button
                         className="neon-btn"
-                        disabled={studentLoading}
+                        disabled={
+                          studentLoading &&
+                          profile?.role !== "admin"
+                        }
                         onClick={() =>
                           handleStartNow(internship)
                         }
                       >
 
-                        {studentLoading
+                        {profile?.role === "admin"
+                          ? "View Admin Dashboard"
+                          : studentLoading
                           ? "Loading…"
                           : hasActiveEnrollment
                           ? "Open Dashboard"
