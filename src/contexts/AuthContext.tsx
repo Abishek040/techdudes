@@ -98,7 +98,10 @@ export function AuthProvider({
           setProfile(null);
         }
       } catch (error) {
-        console.error("Authentication initialization error:", error);
+        console.error(
+          "Authentication initialization error:",
+          error
+        );
 
         if (mounted) {
           setSession(null);
@@ -133,7 +136,7 @@ export function AuthProvider({
           return;
         }
 
-        // Load the profile after the auth state has changed.
+        // Load profile after authentication state changes.
         void loadProfile(session.user.id).finally(() => {
           if (mounted) {
             setLoading(false);
@@ -159,10 +162,7 @@ export function AuthProvider({
     college,
     password,
   }) => {
-    const {
-      data,
-      error,
-    } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
       password,
 
@@ -173,9 +173,10 @@ export function AuthProvider({
           college: college.trim(),
         },
 
-        // After the student confirms their email,
-        // Supabase redirects them here.
-        emailRedirectTo: `${window.location.origin}/auth/email-verified`,
+        // After email confirmation, redirect directly
+        // to the TechDudes Internship Portal.
+        emailRedirectTo:
+          "https://www.techdudes.in/internship",
       },
     });
 
@@ -188,22 +189,19 @@ export function AuthProvider({
     }
 
     if (!data.user) {
-  return {
-    error: "Registration failed — please try again.",
-  };
-}
+      return {
+        error: "Registration failed — please try again.",
+      };
+    }
 
-// Supabase may return a successful-looking response
-// when this email is already registered.
-if (data.user.identities?.length === 0) {
-  return {
-    error:
-      "This email address is already registered. Please login instead.",
-  };
-}
-
-/*
-  IMPORTANT:
+    // Supabase may return a successful-looking response
+    // when the email is already registered.
+    if (data.user.identities?.length === 0) {
+      return {
+        error:
+          "This email address is already registered. Please login instead.",
+      };
+    }
 
     /*
       IMPORTANT:
@@ -212,13 +210,13 @@ if (data.user.identities?.length === 0) {
 
       Supabase handles this automatically:
 
-      auth.users
-          ↓
-      on_auth_user_created
-          ↓
-      handle_new_student()
-          ↓
-      public.profiles
+          auth.users
+              ↓
+          on_auth_user_created
+              ↓
+          handle_new_student()
+              ↓
+          public.profiles
     */
 
     return {
@@ -234,12 +232,11 @@ if (data.user.identities?.length === 0) {
     email,
     password
   ) => {
-    const {
-      error,
-    } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    });
+    const { error } =
+      await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
 
     if (error) {
       console.error("Login error:", error.message);
@@ -254,19 +251,13 @@ if (data.user.identities?.length === 0) {
 
       We intentionally DO NOT navigate here.
 
-      The Login page waits for:
+      The Login page handles navigation after authentication.
 
-        user
-        +
-        profile
+      Admin:
+        → /admin/internship
 
-      and then decides:
-
-        role = admin
-          → /admin/internship
-
-        role = student
-          → /internship
+      Student:
+        → /internship
     */
 
     return {
