@@ -13,10 +13,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-// ============================================================
-// AURORA BACKGROUND
-// ============================================================
-
 import AuroraBackground from "@/components/ui/aurora-background";
 
 import { AuthProvider } from "./contexts/AuthContext";
@@ -40,6 +36,14 @@ import TeamPage from "./pages/TeamPage";
 import NotFound from "./pages/NotFound";
 
 // ============================================================
+// LEGAL PAGES
+// ============================================================
+
+import Terms from "./pages/Terms";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import RefundPolicy from "./pages/RefundPolicy";
+
+// ============================================================
 // INTERNSHIP PAGES
 // ============================================================
 
@@ -54,7 +58,10 @@ import InternshipDashboard from "./pages/internship/Dashboard";
 import InternshipCertificateView from "./pages/internship/CertificateView";
 import VerifyCertificate from "./pages/internship/VerifyCertificate";
 
-// NEW: Email confirmation success page
+// ============================================================
+// EMAIL VERIFICATION
+// ============================================================
+
 import EmailVerified from "./pages/internship/EmailVerified";
 
 // ============================================================
@@ -170,6 +177,25 @@ const App = () => (
                 <Route
                   path="/team"
                   element={<TeamPage />}
+                />
+
+                {/* =================================================
+                    LEGAL PAGES
+                   ================================================= */}
+
+                <Route
+                  path="/terms"
+                  element={<Terms />}
+                />
+
+                <Route
+                  path="/privacy-policy"
+                  element={<PrivacyPolicy />}
+                />
+
+                <Route
+                  path="/refund-policy"
+                  element={<RefundPolicy />}
                 />
 
                 {/* =================================================

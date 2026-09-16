@@ -8,6 +8,10 @@ import {
   Instagram,
 } from "lucide-react";
 
+// ============================================================
+// QUICK LINKS
+// ============================================================
+
 const quickLinks = [
   { label: "Home", path: "/" },
   { label: "Services", path: "/services" },
@@ -17,6 +21,10 @@ const quickLinks = [
   { label: "Contact", path: "/contact" },
   { label: "Internships", path: "/internship" },
 ];
+
+// ============================================================
+// SOCIAL LINKS
+// ============================================================
 
 const socialLinks = [
   {
@@ -37,17 +45,24 @@ const socialLinks = [
   },
 ];
 
+// ============================================================
+// FOOTER
+// ============================================================
+
 const Footer = () => {
   return (
     <footer className="border-t border-border bg-card/50">
+
       <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
 
           {/* =====================================================
               BRAND
              ===================================================== */}
 
           <div className="md:col-span-1">
+
             <h3 className="text-xl font-bold gradient-text mb-4">
               TechDudes
             </h3>
@@ -56,6 +71,7 @@ const Footer = () => {
               Building modern websites and smart IoT projects for
               students and businesses.
             </p>
+
           </div>
 
           {/* =====================================================
@@ -63,11 +79,13 @@ const Footer = () => {
              ===================================================== */}
 
           <div>
+
             <h4 className="font-semibold text-foreground mb-4">
               Quick Links
             </h4>
 
             <div className="flex flex-col gap-2">
+
               {quickLinks.map((item) => (
                 <Link
                   key={item.path}
@@ -77,7 +95,9 @@ const Footer = () => {
                   {item.label}
                 </Link>
               ))}
+
             </div>
+
           </div>
 
           {/* =====================================================
@@ -85,15 +105,65 @@ const Footer = () => {
              ===================================================== */}
 
           <div>
+
             <h4 className="font-semibold text-foreground mb-4">
               Services
             </h4>
 
             <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+
               <span>Web Design</span>
+
               <span>IoT Projects</span>
+
               <span>Tech Support</span>
+
+              <Link
+                to="/internship"
+                className="hover:text-primary transition-colors"
+              >
+                Online Internships
+              </Link>
+
             </div>
+
+          </div>
+
+          {/* =====================================================
+              LEGAL
+             ===================================================== */}
+
+          <div>
+
+            <h4 className="font-semibold text-foreground mb-4">
+              Legal
+            </h4>
+
+            <div className="flex flex-col gap-2">
+
+              <Link
+                to="/terms"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Terms & Conditions
+              </Link>
+
+              <Link
+                to="/privacy-policy"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Privacy Policy
+              </Link>
+
+              <Link
+                to="/refund-policy"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Refund & Cancellation
+              </Link>
+
+            </div>
+
           </div>
 
           {/* =====================================================
@@ -101,6 +171,7 @@ const Footer = () => {
              ===================================================== */}
 
           <div>
+
             <h4 className="font-semibold text-foreground mb-4">
               Contact
             </h4>
@@ -133,6 +204,7 @@ const Footer = () => {
                 <MapPin size={14} />
                 Tamil Nadu, Rajapalayam
               </span>
+
             </div>
 
             {/* =================================================
@@ -140,6 +212,7 @@ const Footer = () => {
                ================================================= */}
 
             <div className="flex gap-3 mt-4">
+
               {socialLinks.map((item) => (
                 <a
                   key={item.type}
@@ -149,6 +222,7 @@ const Footer = () => {
                   className="p-2 rounded-lg border border-border text-muted-foreground hover:text-primary hover:border-primary/30 hover:scale-110 transition-all"
                   aria-label={item.type}
                 >
+
                   {/* GitHub */}
 
                   {item.type === "github" && (
@@ -180,10 +254,14 @@ const Footer = () => {
                       <path d="M18.244 2H21l-6.56 7.5L22.5 22h-6.9l-5.4-7.1L4.8 22H2l7-8-6.7-12h7l5 6.6L18.244 2zM17 20h1.7L7 4H5.2L17 20z" />
                     </svg>
                   )}
+
                 </a>
               ))}
+
             </div>
+
           </div>
+
         </div>
 
         {/* =======================================================
@@ -191,9 +269,13 @@ const Footer = () => {
            ======================================================= */}
 
         <div className="border-t border-border mt-12 pt-8 text-center text-sm text-muted-foreground">
+
           © {new Date().getFullYear()} TechDudes. All rights reserved.
+
         </div>
+
       </div>
+
     </footer>
   );
 };
