@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/lib/supabaseClient";
 import type { Enrollment } from "@/types/internship";
 import { Button } from "@/components/ui/button";
@@ -28,9 +28,10 @@ function loadRazorpayScript(): Promise<void> {
     script.src = RAZORPAY_CHECKOUT_SRC;
 
     script.onload = () => resolve();
+
     script.onerror = () =>
       reject(
-        new Error("Failed to load Razorpay checkout"),
+        new Error("Failed to load Razorpay checkout")
       );
 
     document.body.appendChild(script);
@@ -69,7 +70,7 @@ const Pay = () => {
       if (enrollmentError || !data) {
         setError(
           enrollmentError?.message ||
-            "Unable to load enrollment.",
+            "Unable to load enrollment."
         );
         setLoading(false);
         return;
@@ -82,6 +83,10 @@ const Pay = () => {
     loadEnrollment();
   }, [enrollmentId]);
 
+  // ==========================================================
+  // LOADING
+  // ==========================================================
+
   if (loading) {
     return (
       <div className="pt-32 text-center text-muted-foreground">
@@ -89,6 +94,10 @@ const Pay = () => {
       </div>
     );
   }
+
+  // ==========================================================
+  // INVALID / NOT FOUND
+  // ==========================================================
 
   if (!enrollment) {
     return (
@@ -210,7 +219,7 @@ const Pay = () => {
               className="w-full neon-btn"
               onClick={() =>
                 navigate(
-                  `/internship/modules/${enrollment.id}`,
+                  `/internship/modules/${enrollment.id}`
                 )
               }
             >
@@ -241,6 +250,10 @@ const Pay = () => {
     setProcessing(true);
 
     try {
+      // --------------------------------------------------------
+      // GET CURRENT SESSION
+      // --------------------------------------------------------
+
       const { data: session } =
         await supabase.auth.getSession();
 
@@ -249,9 +262,13 @@ const Pay = () => {
 
       if (!token) {
         throw new Error(
-          "Your session has expired. Please log in again.",
+          "Your session has expired. Please log in again."
         );
       }
+
+      // --------------------------------------------------------
+      // CREATE RAZORPAY ORDER
+      // --------------------------------------------------------
 
       const orderRes = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/razorpay-create-order`,
@@ -264,7 +281,7 @@ const Pay = () => {
           body: JSON.stringify({
             enrollment_id: enrollmentId,
           }),
-        },
+        }
       );
 
       const order = await orderRes.json();
@@ -272,23 +289,37 @@ const Pay = () => {
       if (!orderRes.ok) {
         throw new Error(
           order.error ??
-            "Could not create payment order",
+            "Could not create payment order"
         );
       }
 
+      // --------------------------------------------------------
+      // LOAD RAZORPAY CHECKOUT
+      // --------------------------------------------------------
+
       await loadRazorpayScript();
+
+      // --------------------------------------------------------
+      // OPEN RAZORPAY
+      // --------------------------------------------------------
 
       const rzp = new window.Razorpay({
         key: order.key_id,
         amount: order.amount,
         currency: order.currency,
         order_id: order.order_id,
+
         name: "TechDudes",
+
         description:
           enrollment.internships?.title,
 
         handler: async (response: any) => {
           try {
+            // --------------------------------------------------
+            // VERIFY PAYMENT
+            // --------------------------------------------------
+
             const verifyRes = await fetch(
               `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/razorpay-verify-payment`,
               {
@@ -311,7 +342,7 @@ const Pay = () => {
                   enrollment_id:
                     enrollmentId,
                 }),
-              },
+              }
             );
 
             const verifyData =
@@ -322,17 +353,17 @@ const Pay = () => {
               verifyData.verified
             ) {
               navigate(
-                "/internship/dashboard",
+                "/internship/dashboard"
               );
             } else {
               setError(
-                "Payment could not be verified. Please contact support with your payment ID.",
+                "Payment could not be verified. Please contact support with your payment ID."
               );
             }
           } catch (verifyError: any) {
             setError(
               verifyError?.message ||
-                "Payment verification failed.",
+                "Payment verification failed."
             );
           } finally {
             setProcessing(false);
@@ -353,7 +384,7 @@ const Pay = () => {
     } catch (e: any) {
       setError(
         e.message ??
-          "Something went wrong",
+          "Something went wrong"
       );
 
       setProcessing(false);
@@ -363,6 +394,13 @@ const Pay = () => {
   // ==========================================================
   // PAYMENT PAGE
   // ==========================================================
+
+  const certificateFee =
+    (
+      (enrollment.internships
+        ?.certificate_fee_paise ??
+        0) / 100
+    ).toFixed(0);
 
   return (
     <div className="pt-32 pb-24 max-w-md mx-auto px-6">
@@ -374,20 +412,24 @@ const Pay = () => {
         </CardHeader>
 
         <CardContent className="space-y-6">
+
+          {/* --------------------------------------------------
+              INTERNSHIP + PRICE
+          -------------------------------------------------- */}
+
           <div className="text-center">
             <p className="text-muted-foreground text-sm">
               {enrollment.internships?.title}
             </p>
 
             <p className="text-4xl font-bold text-foreground mt-2">
-              ₹
-              {(
-                (enrollment.internships
-                  ?.certificate_fee_paise ??
-                  0) / 100
-              ).toFixed(0)}
+              ₹{certificateFee}
             </p>
           </div>
+
+          {/* --------------------------------------------------
+              COMPLETION MESSAGE
+          -------------------------------------------------- */}
 
           <div className="rounded-lg border border-green-500/20 bg-green-500/5 p-4 text-sm">
             <p className="text-foreground font-medium">
@@ -401,11 +443,50 @@ const Pay = () => {
             </p>
           </div>
 
+          {/* --------------------------------------------------
+              PAYMENT ERROR
+          -------------------------------------------------- */}
+
           {error && (
             <p className="text-destructive text-sm text-center">
               {error}
             </p>
           )}
+
+          {/* --------------------------------------------------
+              LEGAL POLICY AGREEMENT
+          -------------------------------------------------- */}
+
+          <div className="rounded-lg border border-glass-border bg-glass/20 p-4">
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              By proceeding with payment, you agree to our{" "}
+              <Link
+                to="/terms"
+                className="text-primary hover:underline font-medium"
+              >
+                Terms & Conditions
+              </Link>
+              ,{" "}
+              <Link
+                to="/privacy-policy"
+                className="text-primary hover:underline font-medium"
+              >
+                Privacy Policy
+              </Link>
+              {" "}and{" "}
+              <Link
+                to="/refund-policy"
+                className="text-primary hover:underline font-medium"
+              >
+                Refund & Cancellation Policy
+              </Link>
+              .
+            </p>
+          </div>
+
+          {/* --------------------------------------------------
+              PAY BUTTON
+          -------------------------------------------------- */}
 
           <Button
             className="w-full neon-btn"
@@ -414,8 +495,17 @@ const Pay = () => {
           >
             {processing
               ? "Processing…"
-              : "Pay with Razorpay"}
+              : `Pay ₹${certificateFee} with Razorpay`}
           </Button>
+
+          {/* --------------------------------------------------
+              SUPPORTING PAYMENT NOTE
+          -------------------------------------------------- */}
+
+          <p className="text-xs text-center text-muted-foreground">
+            Payments are securely processed through Razorpay.
+          </p>
+
         </CardContent>
       </Card>
     </div>
