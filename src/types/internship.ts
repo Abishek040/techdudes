@@ -27,11 +27,12 @@ export interface Enrollment {
   end_date: string;
   duration_days: number;
   status:
-    | "not_started"
-    | "in_progress"
-    | "completed"
-    | "certificate_scheduled"
-    | "certificate_issued";
+  "not_started" |
+  "in_progress" |
+  "completed" |
+  "certificate_scheduled" |
+  "certificate_issued" |
+  "expired";
   modules_completed: boolean;
   quiz_passed: boolean;
   quiz_score: number | null;

@@ -29,6 +29,10 @@ const faqs = [
     a: "No. Start and end dates are locked once your internship begins, since your certificate is tied to them.",
   },
   {
+    q: "What happens if I do not complete the internship before the deadline?",
+    a: "If the required modules, quizzes, final assessment, or certificate payment are not completed before your selected ending date, the enrollment is marked as expired and no certificate is issued for that enrollment.",
+  },
+  {
     q: "How do I verify a certificate?",
     a: "Every certificate has a public verification link and QR code — no login required.",
   },
@@ -184,10 +188,34 @@ const InternshipLanding = () => {
       const certificateIssued =
         enrollment.status === "certificate_issued";
 
+      const expired =
+        enrollment.status === "expired" ||
+        enrollment.end_date < today;
+
       if (
         isActiveDateRange &&
-        !certificateIssued
+        !certificateIssued &&
+        !expired
       ) {
+        map[enrollment.internship_id] = enrollment;
+      }
+    }
+
+    return map;
+  }, [enrollments, today]);
+
+  const expiredEnrollmentByInternship = useMemo(() => {
+    const map: Record<string, Enrollment> = {};
+
+    for (const enrollment of enrollments) {
+      const certificateIssued =
+        enrollment.status === "certificate_issued";
+
+      const expired =
+        enrollment.status === "expired" ||
+        (enrollment.end_date < today && !certificateIssued);
+
+      if (expired) {
         map[enrollment.internship_id] = enrollment;
       }
     }
@@ -221,6 +249,14 @@ const InternshipLanding = () => {
     /*
       Student with active enrollment
     */
+    const expiredEnrollment =
+      expiredEnrollmentByInternship[internship.id];
+
+    if (expiredEnrollment) {
+      navigate("/internship/dashboard");
+      return;
+    }
+
     const activeEnrollment =
       activeEnrollmentByInternship[internship.id];
 
@@ -548,8 +584,16 @@ const InternshipLanding = () => {
                   internship.id
                 ];
 
+              const expiredEnrollment =
+                expiredEnrollmentByInternship[
+                  internship.id
+                ];
+
               const hasActiveEnrollment =
                 !!activeEnrollment;
+
+              const isExpired =
+                !!expiredEnrollment;
 
               return (
 
@@ -633,6 +677,29 @@ const InternshipLanding = () => {
 
                     </div>
 
+                    {user &&
+                      profile?.role !== "admin" &&
+                      isExpired && (
+
+                      <div
+                        className="rounded-xl border border-red-500/20 bg-red-500/[0.06] backdrop-blur-lg p-4"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-red-500" />
+                          <p className="text-sm font-semibold text-red-400">
+                            COURSE EXPIRED
+                          </p>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Your selected internship deadline was{" "}
+                          <strong className="text-foreground">
+                            {formatDate(expiredEnrollment.end_date)}
+                          </strong>. The required activities were not completed before the deadline.
+                        </p>
+                      </div>
+
+                    )}
+
                     {/* =================================================
                         LOGGED-IN ACTIVE STATUS
                     ================================================= */}
@@ -678,10 +745,14 @@ const InternshipLanding = () => {
                     <div className="pt-1">
 
                       <Button
-                        className="neon-btn"
+                        className={
+                          isExpired
+                            ? "border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/10"
+                            : "neon-btn"
+                        }
                         disabled={
-                          studentLoading &&
-                          profile?.role !== "admin"
+                          (studentLoading && profile?.role !== "admin") ||
+                          (isExpired && profile?.role !== "admin")
                         }
                         onClick={() =>
                           handleStartNow(internship)
@@ -692,6 +763,8 @@ const InternshipLanding = () => {
                           ? "View Admin Dashboard"
                           : studentLoading
                           ? "Loading…"
+                          : isExpired
+                          ? "Course Expired"
                           : hasActiveEnrollment
                           ? "Open Dashboard"
                           : "Start Now"}
