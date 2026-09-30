@@ -23,7 +23,7 @@ const team = [
     desc: "Identifies new business opportunities and builds partnerships. Works closely with clients to understand and deliver tailored solutions.",
   },
   {
-    name: "Kishore Maadhavan",
+    name: "Aro  Jeswanth A Doss",
     role: "Business Development Associate",
     desc: "Drives client acquisition and supports business growth initiatives. Ensures smooth communication between clients and the technical team.",
   },
