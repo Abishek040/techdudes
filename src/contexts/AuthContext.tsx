@@ -1,3 +1,4 @@
+```tsx
 import {
   createContext,
   useContext,
@@ -40,6 +41,14 @@ const AuthContext = createContext<AuthContextValue | undefined>(
   undefined
 );
 
+// ============================================================
+// 24-HOUR LOGIN LIMIT
+// ============================================================
+
+const LOGIN_TIMESTAMP_KEY = "techdudes_login_timestamp";
+
+const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+
 export function AuthProvider({
   children,
 }: {
@@ -75,6 +84,59 @@ export function AuthProvider({
   };
 
   // ------------------------------------------------------------
+  // CLEAR LOCAL AUTH STATE
+  // ------------------------------------------------------------
+
+  const clearAuthState = () => {
+    localStorage.removeItem(LOGIN_TIMESTAMP_KEY);
+
+    setUser(null);
+    setSession(null);
+    setProfile(null);
+  };
+
+  // ------------------------------------------------------------
+  // AUTOMATIC 24-HOUR LOGOUT
+  // ------------------------------------------------------------
+
+  const checkLoginExpiry = async () => {
+    const loginTimestamp = localStorage.getItem(
+      LOGIN_TIMESTAMP_KEY
+    );
+
+    if (!loginTimestamp) {
+      return false;
+    }
+
+    const loginTime = Number(loginTimestamp);
+
+    if (Number.isNaN(loginTime)) {
+      localStorage.removeItem(LOGIN_TIMESTAMP_KEY);
+      return false;
+    }
+
+    const elapsed = Date.now() - loginTime;
+
+    // ----------------------------------------------------------
+    // 24 HOURS COMPLETED
+    // ----------------------------------------------------------
+
+    if (elapsed >= TWENTY_FOUR_HOURS) {
+      console.log(
+        "24-hour login limit reached. Logging out..."
+      );
+
+      await supabase.auth.signOut();
+
+      clearAuthState();
+
+      return true;
+    }
+
+    return false;
+  };
+
+  // ------------------------------------------------------------
   // INITIAL AUTH CHECK
   // ------------------------------------------------------------
 
@@ -88,6 +150,22 @@ export function AuthProvider({
         } = await supabase.auth.getSession();
 
         if (!mounted) return;
+
+        // ------------------------------------------------------
+        // CHECK 24-HOUR LOGIN EXPIRY
+        // ------------------------------------------------------
+
+        if (session?.user) {
+          const expired = await checkLoginExpiry();
+
+          if (expired) {
+            if (mounted) {
+              setLoading(false);
+            }
+
+            return;
+          }
+        }
 
         setSession(session);
         setUser(session?.user ?? null);
@@ -104,9 +182,7 @@ export function AuthProvider({
         );
 
         if (mounted) {
-          setSession(null);
-          setUser(null);
-          setProfile(null);
+          clearAuthState();
         }
       } finally {
         if (mounted) {
@@ -131,12 +207,11 @@ export function AuthProvider({
         setUser(session?.user ?? null);
 
         if (!session?.user) {
-          setProfile(null);
+          clearAuthState();
           setLoading(false);
           return;
         }
 
-        // Load profile after authentication state changes.
         void loadProfile(session.user.id).finally(() => {
           if (mounted) {
             setLoading(false);
@@ -150,6 +225,59 @@ export function AuthProvider({
       subscription.unsubscribe();
     };
   }, []);
+
+  // ------------------------------------------------------------
+  // 24-HOUR EXPIRATION TIMER
+  // ------------------------------------------------------------
+
+  useEffect(() => {
+    if (!session?.user) {
+      return;
+    }
+
+    const loginTimestamp = localStorage.getItem(
+      LOGIN_TIMESTAMP_KEY
+    );
+
+    if (!loginTimestamp) {
+      return;
+    }
+
+    const loginTime = Number(loginTimestamp);
+
+    if (Number.isNaN(loginTime)) {
+      return;
+    }
+
+    const remainingTime =
+      TWENTY_FOUR_HOURS -
+      (Date.now() - loginTime);
+
+    // ----------------------------------------------------------
+    // ALREADY EXPIRED
+    // ----------------------------------------------------------
+
+    if (remainingTime <= 0) {
+      void logout();
+      return;
+    }
+
+    // ----------------------------------------------------------
+    // SET TIMER FOR EXACT EXPIRATION
+    // ----------------------------------------------------------
+
+    const timer = window.setTimeout(() => {
+      console.log(
+        "24-hour login limit reached. Logging out..."
+      );
+
+      void logout();
+    }, remainingTime);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [session?.user]);
 
   // ------------------------------------------------------------
   // REGISTER
@@ -173,15 +301,16 @@ export function AuthProvider({
           college: college.trim(),
         },
 
-        // After email confirmation, redirect directly
-        // to the TechDudes Internship Portal.
         emailRedirectTo:
           "https://www.techdudes.in/internship",
       },
     });
 
     if (error) {
-      console.error("Registration error:", error.message);
+      console.error(
+        "Registration error:",
+        error.message
+      );
 
       return {
         error: error.message,
@@ -190,34 +319,17 @@ export function AuthProvider({
 
     if (!data.user) {
       return {
-        error: "Registration failed — please try again.",
+        error:
+          "Registration failed — please try again.",
       };
     }
 
-    // Supabase may return a successful-looking response
-    // when the email is already registered.
     if (data.user.identities?.length === 0) {
       return {
         error:
           "This email address is already registered. Please login instead.",
       };
     }
-
-    /*
-      IMPORTANT:
-
-      We DO NOT insert into public.profiles here.
-
-      Supabase handles this automatically:
-
-          auth.users
-              ↓
-          on_auth_user_created
-              ↓
-          handle_new_student()
-              ↓
-          public.profiles
-    */
 
     return {
       error: null,
@@ -239,26 +351,24 @@ export function AuthProvider({
       });
 
     if (error) {
-      console.error("Login error:", error.message);
+      console.error(
+        "Login error:",
+        error.message
+      );
 
       return {
         error: error.message,
       };
     }
 
-    /*
-      IMPORTANT:
+    // ----------------------------------------------------------
+    // START 24-HOUR LOGIN PERIOD
+    // ----------------------------------------------------------
 
-      We intentionally DO NOT navigate here.
-
-      The Login page handles navigation after authentication.
-
-      Admin:
-        → /admin/internship
-
-      Student:
-        → /internship
-    */
+    localStorage.setItem(
+      LOGIN_TIMESTAMP_KEY,
+      Date.now().toString()
+    );
 
     return {
       error: null,
@@ -273,13 +383,13 @@ export function AuthProvider({
     const { error } = await supabase.auth.signOut();
 
     if (error) {
-      console.error("Logout error:", error.message);
+      console.error(
+        "Logout error:",
+        error.message
+      );
     }
 
-    // Immediately clear local authentication state.
-    setUser(null);
-    setSession(null);
-    setProfile(null);
+    clearAuthState();
   };
 
   // ------------------------------------------------------------
@@ -340,3 +450,4 @@ export function useAuth() {
 
   return ctx;
 }
+```
