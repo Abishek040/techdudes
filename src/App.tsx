@@ -1,3 +1,4 @@
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   BrowserRouter,
@@ -12,21 +13,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
 import AuroraBackground from "@/components/ui/aurora-background";
 
 import { AuthProvider } from "./contexts/AuthContext";
-
-// ============================================================
-// ROUTE PROTECTION
-// ============================================================
-
 import { AdminRoute } from "@/components/ProtectedRoute";
 
-// ============================================================
-// EXISTING TECHDUDES PAGES
-// ============================================================
-
+// Existing TechDudes pages
 import HomePage from "./pages/HomePage";
 import ServicesPage from "./pages/ServicesPage";
 import ProjectsPage from "./pages/ProjectsPage";
@@ -35,18 +27,15 @@ import ContactPage from "./pages/ContactPage";
 import TeamPage from "./pages/TeamPage";
 import NotFound from "./pages/NotFound";
 
-// ============================================================
-// LEGAL PAGES
-// ============================================================
+// Personal portfolio
+import Portfolio from "./pages/Portfolio";
 
+// Legal pages
 import Terms from "./pages/Terms";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
 
-// ============================================================
-// INTERNSHIP PAGES
-// ============================================================
-
+// Internship pages
 import InternshipLanding from "./pages/internship/InternshipLanding";
 import InternshipLogin from "./pages/internship/Login";
 import InternshipRegister from "./pages/internship/Register";
@@ -57,29 +46,14 @@ import InternshipPay from "./pages/internship/Pay";
 import InternshipDashboard from "./pages/internship/Dashboard";
 import InternshipCertificateView from "./pages/internship/CertificateView";
 import VerifyCertificate from "./pages/internship/VerifyCertificate";
-
-// ============================================================
-// EMAIL VERIFICATION
-// ============================================================
-
 import EmailVerified from "./pages/internship/EmailVerified";
 
-// ============================================================
-// ADMIN
-// ============================================================
-
+// Admin pages
 import AdminInternship from "./pages/admin/AdminInternship";
-
-// ============================================================
-// REACT QUERY
-// ============================================================
 
 const queryClient = new QueryClient();
 
-// ============================================================
-// SCROLL TO TOP
-// ============================================================
-
+// Scroll to top when navigating between pages
 const ScrollToTop = () => {
   const { pathname } = useLocation();
 
@@ -90,275 +64,145 @@ const ScrollToTop = () => {
   return null;
 };
 
-// ============================================================
-// APP
-// ============================================================
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider>
         <Sonner />
 
-        {/* ====================================================
-            GLOBAL PAGE CONTAINER
-           ==================================================== */}
+        <div className="relative flex min-h-screen flex-col">
+          {/* Shared TechDudes background */}
+          <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+            <AuroraBackground
+              gradientColors={[
+                "rgba(99, 102, 241, 0.20)",
+                "rgba(139, 92, 246, 0.20)",
+              ]}
+              pulseDuration={8}
+              starCount={80}
+            />
+          </div>
 
-        <div className="relative min-h-screen">
-
-          {/* ==================================================
-              GLOBAL AURORA BACKGROUND
-             ================================================== */}
-
-          <AuroraBackground
-            gradientColors={[
-              "rgba(99, 102, 241, 0.20)",
-              "rgba(139, 92, 246, 0.20)",
-            ]}
-            pulseDuration={8}
-            starCount={80}
-          />
-
-          {/* ==================================================
-              MAIN WEBSITE CONTENT
-             ================================================== */}
-
-          <div className="relative z-10 min-h-screen">
-
+          <div className="relative z-10 flex min-h-screen flex-1 flex-col">
             <BrowserRouter>
-
-              {/* =================================================
-                  SCROLL TO TOP
-                 ================================================= */}
-
               <ScrollToTop />
-
-              {/* =================================================
-                  GLOBAL NAVBAR
-                 ================================================= */}
 
               <Navbar />
 
-              {/* =================================================
-                  ROUTES
-                 ================================================= */}
+              {/* Route content fills available space */}
+              <div className="flex-1">
+                <Routes>
+                  {/* Main TechDudes website */}
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/services" element={<ServicesPage />} />
+                  <Route path="/projects" element={<ProjectsPage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/team" element={<TeamPage />} />
 
-              <Routes>
+                  {/* Personal portfolio */}
+                  <Route path="/abishek" element={<Portfolio />} />
 
-                {/* =================================================
-                    EXISTING TECHDUDES WEBSITE
-                   ================================================= */}
+                  {/* Legal pages */}
+                  <Route path="/terms" element={<Terms />} />
+                  <Route
+                    path="/privacy-policy"
+                    element={<PrivacyPolicy />}
+                  />
+                  <Route
+                    path="/refund-policy"
+                    element={<RefundPolicy />}
+                  />
 
-                <Route
-                  path="/"
-                  element={<HomePage />}
-                />
+                  {/* Public certificate verification */}
+                  <Route path="/verify" element={<VerifyCertificate />} />
+                  <Route
+                    path="/verify/:code"
+                    element={<VerifyCertificate />}
+                  />
+                  <Route
+                    path="/verify-certificate/:code"
+                    element={<VerifyCertificate />}
+                  />
 
-                <Route
-                  path="/services"
-                  element={<ServicesPage />}
-                />
+                  {/* Email verification */}
+                  <Route
+                    path="/auth/email-verified"
+                    element={<EmailVerified />}
+                  />
 
-                <Route
-                  path="/projects"
-                  element={<ProjectsPage />}
-                />
+                  {/* Internship portal */}
+                  <Route
+                    path="/internship"
+                    element={<InternshipLanding />}
+                  />
+                  <Route
+                    path="/internship/login"
+                    element={<InternshipLogin />}
+                  />
+                  <Route
+                    path="/internship/register"
+                    element={<InternshipRegister />}
+                  />
+                  <Route
+                    path="/internship/enroll/:slug"
+                    element={<InternshipEnroll />}
+                  />
 
-                <Route
-                  path="/about"
-                  element={<AboutPage />}
-                />
+                  {/* Internship learning modules */}
+                  <Route
+                    path="/internship/modules/:enrollmentId"
+                    element={<InternshipModules />}
+                  />
+                  <Route
+                    path="/internship/modules/:enrollmentId/:moduleId"
+                    element={<InternshipModules />}
+                  />
 
-                <Route
-                  path="/contact"
-                  element={<ContactPage />}
-                />
+                  {/* Internship quiz */}
+                  <Route
+                    path="/internship/quiz/:enrollmentId"
+                    element={<InternshipQuiz />}
+                  />
 
-                <Route
-                  path="/team"
-                  element={<TeamPage />}
-                />
+                  {/* Certificate payment */}
+                  <Route
+                    path="/internship/pay/:enrollmentId"
+                    element={<InternshipPay />}
+                  />
 
-                {/* =================================================
-                    LEGAL PAGES
-                   ================================================= */}
+                  {/* Student dashboard */}
+                  <Route
+                    path="/internship/dashboard"
+                    element={<InternshipDashboard />}
+                  />
 
-                <Route
-                  path="/terms"
-                  element={<Terms />}
-                />
+                  {/* Internship certificate */}
+                  <Route
+                    path="/internship/certificate/:enrollmentId"
+                    element={<InternshipCertificateView />}
+                  />
 
-                <Route
-                  path="/privacy-policy"
-                  element={<PrivacyPolicy />}
-                />
+                  {/* Protected admin dashboard */}
+                  <Route
+                    path="/admin/internship"
+                    element={
+                      <AdminRoute>
+                        <AdminInternship />
+                      </AdminRoute>
+                    }
+                  />
 
-                <Route
-                  path="/refund-policy"
-                  element={<RefundPolicy />}
-                />
+                  {/* 404 page */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </div>
 
-                {/* =================================================
-                    PUBLIC CERTIFICATE VERIFICATION
-                   ================================================= */}
-
-                <Route
-                  path="/verify"
-                  element={<VerifyCertificate />}
-                />
-
-                <Route
-                  path="/verify/:code"
-                  element={<VerifyCertificate />}
-                />
-
-                <Route
-                  path="/verify-certificate/:code"
-                  element={<VerifyCertificate />}
-                />
-
-                {/* =================================================
-                    EMAIL VERIFICATION
-                   ================================================= */}
-
-                <Route
-                  path="/auth/email-verified"
-                  element={<EmailVerified />}
-                />
-
-                {/* =================================================
-                    INTERNSHIP PORTAL
-                   ================================================= */}
-
-                {/* -------------------------------------------------
-                    Internship Landing Page
-                   ------------------------------------------------- */}
-
-                <Route
-                  path="/internship"
-                  element={<InternshipLanding />}
-                />
-
-                {/* -------------------------------------------------
-                    Student Login
-                   ------------------------------------------------- */}
-
-                <Route
-                  path="/internship/login"
-                  element={<InternshipLogin />}
-                />
-
-                {/* -------------------------------------------------
-                    Student Registration
-                   ------------------------------------------------- */}
-
-                <Route
-                  path="/internship/register"
-                  element={<InternshipRegister />}
-                />
-
-                {/* -------------------------------------------------
-                    Internship Enrollment
-                   ------------------------------------------------- */}
-
-                <Route
-                  path="/internship/enroll/:slug"
-                  element={<InternshipEnroll />}
-                />
-
-                {/* =================================================
-                    INTERNSHIP LEARNING MODULES
-                   ================================================= */}
-
-                {/* -------------------------------------------------
-                    Module List
-                   ------------------------------------------------- */}
-
-                <Route
-                  path="/internship/modules/:enrollmentId"
-                  element={<InternshipModules />}
-                />
-
-                {/* -------------------------------------------------
-                    Individual Module
-                   ------------------------------------------------- */}
-
-                <Route
-                  path="/internship/modules/:enrollmentId/:moduleId"
-                  element={<InternshipModules />}
-                />
-
-                {/* =================================================
-                    INTERNSHIP QUIZ
-                   ================================================= */}
-
-                <Route
-                  path="/internship/quiz/:enrollmentId"
-                  element={<InternshipQuiz />}
-                />
-
-                {/* =================================================
-                    CERTIFICATE PAYMENT
-                   ================================================= */}
-
-                <Route
-                  path="/internship/pay/:enrollmentId"
-                  element={<InternshipPay />}
-                />
-
-                {/* =================================================
-                    STUDENT DASHBOARD
-                   ================================================= */}
-
-                <Route
-                  path="/internship/dashboard"
-                  element={<InternshipDashboard />}
-                />
-
-                {/* =================================================
-                    CERTIFICATE
-                   ================================================= */}
-
-                <Route
-                  path="/internship/certificate/:enrollmentId"
-                  element={<InternshipCertificateView />}
-                />
-
-                {/* =================================================
-                    ADMIN INTERNSHIP DASHBOARD
-                   ================================================= */}
-
-                <Route
-                  path="/admin/internship"
-                  element={
-                    <AdminRoute>
-                      <AdminInternship />
-                    </AdminRoute>
-                  }
-                />
-
-                {/* =================================================
-                    404
-                   ================================================= */}
-
-                <Route
-                  path="*"
-                  element={<NotFound />}
-                />
-
-              </Routes>
-
-              {/* =================================================
-                  GLOBAL FOOTER
-                 ================================================= */}
-
+              {/* Render the shared footer only once */}
               <Footer />
-
             </BrowserRouter>
-
           </div>
         </div>
-
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
